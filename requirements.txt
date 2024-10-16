@@ -1,0 +1,12 @@
+boto3
+python-dotenv
+SQLAlchemy
+psycopg2
+pandas
+pydantic>=2.5.3
+flask>=3.0.3
+flask-login>=0.6.3
+requests>=2.31.0
+pyjwt>=2.8.0
+rich>=13.7.1
+PyJWT

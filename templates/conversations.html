@@ -1,0 +1,60 @@
+{% extends "template.html" %}
+{% block title %}My Conversations{% endblock %}
+{% block content %}
+<div>
+    <h2>My Conversations</h2>
+    <p>Hello, <span>{{ user.name }}</span>. View active Amazon Q Business conversations below.
+    </p>
+
+</div>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Conversation Id</th>
+        <th>Title</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for conversation in conversations %}
+    <tr id='{{ conversation.conversationId }}'>
+        <td>{{ conversation.conversationId }}</td>
+        <td id="claim-{{ conversation.conversationId }}">
+            {{ conversation.title }}
+        </td>
+        <td><button onclick="deleteConversation('{{ conversation.conversationId }}')" id="answer-btn">Delete</button></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    function deleteTableRow(rowId)  
+    {   
+        var row = document.getElementById(rowId);
+        row.parentNode.removeChild(row);
+    }
+
+    function deleteConversation(id) {
+        console.log("conversationId = " + id);
+        fetch("/delete_chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            signal: AbortSignal.timeout(60000),
+            body: JSON.stringify({conversationId: id})
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data && data.hasOwnProperty('status') && data.status.toLowerCase() == "success") {
+                deleteTableRow(id);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
+</script>
+{% endblock content %}
